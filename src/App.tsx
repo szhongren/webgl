@@ -6,15 +6,14 @@ function App() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const gl = canvas?.getContext("2d");
+    const gl = canvas?.getContext("webgl2");
 
     if (!gl) {
       return;
     }
 
-    // Clear the canvas
-    gl.fillStyle = "rgba(0, 0, 255, 1.0)";
-    gl.fillRect(120, 10, 150, 150);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
   }, []);
   return <canvas ref={canvasRef} width="800" height="1000"></canvas>;
 }
