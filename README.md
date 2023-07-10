@@ -1,46 +1,58 @@
-# Getting Started with Create React App
+# This is a React project for writing and trying out webgl stuff
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bootstrapped with Create React App with typescript
 
-## Available Scripts
+## How to do this yourself
 
-In the project directory, you can run:
+`npx create-react-app webgl --template typescript`
 
-### `npm start`
+We need to customize webpack in order to handle the shader files
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`npm run eject`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Make sure webpack version is 5+.
 
-### `npm test`
+In `webpack.config.js`, go to `module.rules` (or find the string `oneOf`) to modify the list of loaders.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Add the following loader to the front of the list:
 
-### `npm run build`
+```
+{
+    test: /\.(glsl|vert|frag)$/,
+    type: "asset/source",
+},
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create a shaders directory and put your shaders there, in `/src`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create a types directory and add the following definitions, in `/src`:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+declare module "*.frag" {
+  const value: string;
+  export default value;
+}
 
-### `npm run eject`
+declare module "*.glsl" {
+  const value: string;
+  export default value;
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+declare module "*.vert" {
+  const value: string;
+  export default value;
+}
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+In `tsconfig.json`, add the following to your `typeRoots` for Typescript to be able to find your custom types:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+"typeRoots": [
+    "./node_modules/@types",
+    "./src/@types"
+],
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Now, you will be able to import your shaders with `import vertShader from './relative/path/to/shader/from/App/vertShader.vert` in `App.tsx`.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Happy WebGling!
