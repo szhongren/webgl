@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import helloPoint1Frag from "./shaders/helloPoint1/fragmentShader.frag";
-import helloPoint1Vert from "./shaders/helloPoint1/vertexShader.vert";
+import helloPoint2Frag from "./shaders/helloPoint2/fragmentShader.frag";
+import helloPoint2Vert from "./shaders/helloPoint2/vertexShader.vert";
 
 function createShader(
   gl: WebGLRenderingContext,
@@ -86,11 +86,21 @@ function App() {
       const gl = canvas?.getContext("webgl2");
 
       if (!gl) {
+        console.log("WebGL2 is not available.");
         return;
       }
 
-      const program = await initShaders(gl, helloPoint1Vert, helloPoint1Frag);
+      const program = await initShaders(gl, helloPoint2Vert, helloPoint2Frag);
 
+      if (!program) {
+        console.log("Failed to initialize shaders.");
+        return;
+      }
+
+      var a_Position = gl.getAttribLocation(program, "a_Position");
+      var a_PointSize = gl.getAttribLocation(program, "a_PointSize");
+      gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+      gl.vertexAttrib1f(a_PointSize, 50.0);
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
