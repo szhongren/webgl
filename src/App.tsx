@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import helloPoint2Frag from "./shaders/helloPoint2/fragmentShader.frag";
-import helloPoint2Vert from "./shaders/helloPoint2/vertexShader.vert";
+import fragShader from "./shaders/clickedPoints/fragmentShader.frag";
+import vertShader from "./shaders/clickedPoints/vertexShader.vert";
 
 function createShader(
   gl: WebGLRenderingContext,
@@ -83,14 +83,18 @@ function App() {
   useEffect(() => {
     const loadShadersAndDraw = async () => {
       const canvas = canvasRef.current;
-      const gl = canvas?.getContext("webgl2");
+      if (!canvas) {
+        console.log("Canvas is not available.");
+        return;
+      }
+      const gl = canvas.getContext("webgl2");
 
       if (!gl) {
         console.log("WebGL2 is not available.");
         return;
       }
 
-      const program = await initShaders(gl, helloPoint2Vert, helloPoint2Frag);
+      const program = await initShaders(gl, vertShader, fragShader);
 
       if (!program) {
         console.log("Failed to initialize shaders.");
@@ -99,16 +103,54 @@ function App() {
 
       var a_Position = gl.getAttribLocation(program, "a_Position");
       var a_PointSize = gl.getAttribLocation(program, "a_PointSize");
-      gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
-      gl.vertexAttrib1f(a_PointSize, 50.0);
-      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      canvas.onmousedown = (handler) => {
+        click(handler, gl, canvas, a_Position);
+      };
+      gl.vertexAttrib1f(a_PointSize, 2.0);
+      gl.clearColor(0.0, 1.0, 1.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
-      gl.drawArrays(gl.POINTS, 0, 1);
     };
     loadShadersAndDraw();
   }, []);
-  return <canvas ref={canvasRef} width="800" height="1000"></canvas>;
+  return (
+    <canvas
+      ref={canvasRef}
+      width="800"
+      height="1000"
+      style={{ margin: "10px" }}
+      // style={{ border: "10px solid black" }}
+      // style={{ padding: "10px" }}
+    ></canvas>
+  );
 }
 
+var g_points: number[][] = [];
+function click(
+  handler: any,
+  gl: any,
+  canvas: HTMLCanvasElement,
+  a_Position: any
+) {
+  // get raw xy from top left of browser window
+  const viewportX = handler.clientX;
+  const viewportY = handler.clientY;
+  const rect = handler.target.getBoundingClientRect();
+
+  // handles margin only
+  const webglX =
+    (viewportX - rect.left - canvas.width / 2) / (canvas.width / 2);
+
+  const webglY =
+    -(viewportY - rect.top - canvas.height / 2) / (canvas.height / 2);
+
+  g_points.push([webglX, webglY]);
+
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  for (const point of g_points) {
+    gl.vertexAttrib3f(a_Position, point[0], point[1], 0.0);
+    gl.drawArrays(gl.POINTS, 0, 1);
+  }
+}
 export default App;
