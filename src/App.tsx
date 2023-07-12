@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/clickedPoints/fragmentShader.frag";
-import vertShader from "./shaders/clickedPoints/vertexShader.vert";
+import fragShader from "./shaders/coloredPoints/fragmentShader.frag";
+import vertShader from "./shaders/coloredPoints/vertexShader.vert";
 
 function createShader(
   gl: WebGLRenderingContext,
@@ -103,11 +103,12 @@ function App() {
 
       var a_Position = gl.getAttribLocation(program, "a_Position");
       var a_PointSize = gl.getAttribLocation(program, "a_PointSize");
-      canvas.onmousedown = (handler) => {
-        click(handler, gl, canvas, a_Position);
+      var u_FragColor = gl.getUniformLocation(program, "u_FragColor");
+      canvas.onmousedown = (event) => {
+        click(event, gl, canvas, a_Position, u_FragColor);
       };
       gl.vertexAttrib1f(a_PointSize, 2.0);
-      gl.clearColor(0.0, 1.0, 1.0, 1.0);
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
     };
@@ -126,16 +127,20 @@ function App() {
 }
 
 var g_points: number[][] = [];
+var g_colors: number[][] = [];
 function click(
-  handler: any,
-  gl: any,
+  event: MouseEvent,
+  gl: WebGLRenderingContext,
   canvas: HTMLCanvasElement,
-  a_Position: any
+  a_Position: number,
+  u_FragColor: WebGLUniformLocation | null
 ) {
   // get raw xy from top left of browser window
-  const viewportX = handler.clientX;
-  const viewportY = handler.clientY;
-  const rect = handler.target.getBoundingClientRect();
+  const reactMouseEvent =
+    event as unknown as React.MouseEvent<HTMLCanvasElement>;
+  const viewportX = reactMouseEvent.clientX;
+  const viewportY = reactMouseEvent.clientY;
+  const rect = reactMouseEvent?.currentTarget.getBoundingClientRect();
 
   // handles margin only
   const webglX =
@@ -145,11 +150,21 @@ function click(
     -(viewportY - rect.top - canvas.height / 2) / (canvas.height / 2);
 
   g_points.push([webglX, webglY]);
+  if (webglX >= 0.0 && webglY >= 0.0) {
+    g_colors.push([1.0, 0.0, 0.0, 1.0]);
+  } else if (webglX < 0.0 && webglY < 0.0) {
+    g_colors.push([0.0, 1.0, 0.0, 1.0]);
+  } else {
+    g_colors.push([1.0, 1.0, 1.0, 1.0]);
+  }
 
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  for (const point of g_points) {
-    gl.vertexAttrib3f(a_Position, point[0], point[1], 0.0);
+  for (var i = 0; i < g_points.length; i++) {
+    const xy = g_points[i];
+    const rgba = g_colors[i];
+    gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
+    gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
     gl.drawArrays(gl.POINTS, 0, 1);
   }
 }
