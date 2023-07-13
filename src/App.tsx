@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/coloredPoints/fragmentShader.frag";
-import vertShader from "./shaders/coloredPoints/vertexShader.vert";
+import fragShader from "./shaders/multiPoints/fragmentShader.frag";
+import vertShader from "./shaders/multiPoints/vertexShader.vert";
 
 function createShader(
   gl: WebGLRenderingContext,
@@ -72,9 +72,32 @@ async function initShaders(
 
   const program = createProgram(gl, vertexShader, fragmentShader);
 
-  // Set up shader program here
-
   return program;
+}
+
+function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
+  var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+  var n = 3;
+
+  // 1. create buffer object
+  var vertexBuffer = gl.createBuffer();
+  if (!vertexBuffer) {
+    console.log("Failed to create the buffer object");
+    return -1;
+  }
+
+  // 2. bind the buffer object to target
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  // 3. write data into the buffer object
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+  var a_Position = gl.getAttribLocation(program, "a_Position");
+  // 4. assign buffer object to attribute variable
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+  // 5. enable the assignment to a_Position variable
+  gl.enableVertexAttribArray(a_Position);
+
+  return n;
 }
 
 function App() {
@@ -101,16 +124,12 @@ function App() {
         return;
       }
 
-      var a_Position = gl.getAttribLocation(program, "a_Position");
-      var a_PointSize = gl.getAttribLocation(program, "a_PointSize");
-      var u_FragColor = gl.getUniformLocation(program, "u_FragColor");
-      canvas.onmousedown = (event) => {
-        click(event, gl, canvas, a_Position, u_FragColor);
-      };
-      gl.vertexAttrib1f(a_PointSize, 2.0);
+      var n = initVertexBuffers(gl, program);
+
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
+      gl.drawArrays(gl.POINTS, 0, n);
     };
     loadShadersAndDraw();
   }, []);
@@ -168,4 +187,5 @@ function click(
     gl.drawArrays(gl.POINTS, 0, 1);
   }
 }
+
 export default App;
