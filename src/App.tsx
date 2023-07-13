@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/multiPoints/fragmentShader.frag";
-import vertShader from "./shaders/multiPoints/vertexShader.vert";
+import fragShader from "./shaders/helloTriangle/fragmentShader.frag";
+import vertShader from "./shaders/helloTriangle/vertexShader.vert";
 
 function createShader(
   gl: WebGLRenderingContext,
@@ -129,7 +129,7 @@ function App() {
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
-      gl.drawArrays(gl.POINTS, 0, n);
+      gl.drawArrays(gl.TRIANGLES, 0, n);
     };
     loadShadersAndDraw();
   }, []);
