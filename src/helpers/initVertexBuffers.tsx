@@ -1,6 +1,6 @@
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
-  var vertices = new Float32Array([0, 0.5, -0.5, -0.5, 0.5, -0.5]);
-  var n = 3;
+  var vertices = new Float32Array([-0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5]);
+  var n = vertices.length / 2;
 
   // 1. create buffer object
   var vertexBuffer = gl.createBuffer();
