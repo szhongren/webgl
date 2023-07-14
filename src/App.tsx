@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/translatedTriangle/fragmentShader.frag";
-import vertShader from "./shaders/translatedTriangle/vertexShader.vert";
+import fragShader from "./shaders/rotatedTriangle/fragmentShader.frag";
+import vertShader from "./shaders/rotatedTriangle/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 
@@ -42,7 +42,7 @@ function App() {
   return (
     <canvas
       ref={canvasRef}
-      width="800"
+      width="1000"
       height="1000"
       style={{ margin: "10px" }}
       // style={{ border: "10px solid black" }}
