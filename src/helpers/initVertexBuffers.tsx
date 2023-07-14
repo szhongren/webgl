@@ -1,4 +1,7 @@
 var ANGLE = 90.0;
+var Tx = 0.5,
+  Ty = 0.5,
+  Tz = 0.0;
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
@@ -28,13 +31,13 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
 
   // colum major order, each column down first, then across
   var transformMatrix = new Float32Array([
-    cosB,
-    sinB,
+    1.0,
+    0.0,
     0.0,
     0.0,
     //
-    -sinB,
-    cosB,
+    0.0,
+    1.0,
     0.0,
     0.0,
     //
@@ -43,9 +46,9 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
     1.0,
     0.0,
     //
-    0.0,
-    0.0,
-    0.0,
+    Tx,
+    Ty,
+    Tz,
     1.0,
   ]);
 
