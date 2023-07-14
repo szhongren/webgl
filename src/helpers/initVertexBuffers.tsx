@@ -1,5 +1,9 @@
+var Tx = 0.5,
+  Ty = 0.5,
+  Tz = 0.0;
+
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
-  var vertices = new Float32Array([-0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5]);
+  var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
   var n = vertices.length / 2;
 
   // 1. create buffer object
@@ -15,6 +19,8 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
   var a_Position = gl.getAttribLocation(program, "a_Position");
+  var u_Translation = gl.getUniformLocation(program, "u_Translation");
+  gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0);
   // 4. assign buffer object to attribute variable
   gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
   // 5. enable the assignment to a_Position variable

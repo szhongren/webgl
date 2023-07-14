@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/helloQuad/fragmentShader.frag";
-import vertShader from "./shaders/helloQuad/vertexShader.vert";
+import fragShader from "./shaders/translatedTriangle/fragmentShader.frag";
+import vertShader from "./shaders/translatedTriangle/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 
@@ -29,12 +29,13 @@ function App() {
         return;
       }
 
+      gl.useProgram(program);
+
       var n = initVertexBuffers(gl, program);
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.useProgram(program);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+      gl.drawArrays(gl.TRIANGLES, 0, n);
     };
     loadShadersAndDraw();
   }, []);
