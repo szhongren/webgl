@@ -1,7 +1,4 @@
-var ANGLE = 90.0;
-var Sx = 1.0,
-  Sy = 1.5,
-  Sz = 1.0;
+import TransformMatrix4 from "./matrix";
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
@@ -25,35 +22,10 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var radian = (Math.PI * ANGLE) / 180.0; // Convert to radians
-  var cosB = Math.cos(radian);
-  var sinB = Math.sin(radian);
-
-  // colum major order, each column down first, then across
-  var transformMatrix = new Float32Array([
-    Sx,
-    0.0,
-    0.0,
-    0.0,
-    //
-    0.0,
-    Sy,
-    0.0,
-    0.0,
-    //
-    0.0,
-    0.0,
-    Sz,
-    0.0,
-    //
-    0.0,
-    0.0,
-    0.0,
-    1.0,
-  ]);
-
+  var transformMatrix = new TransformMatrix4();
+  transformMatrix.setRotate(30, 0, 0, 1);
   var u_TransformMatrix = gl.getUniformLocation(program, "u_TransformMatrix");
-  gl.uniformMatrix4fv(u_TransformMatrix, false, transformMatrix);
+  gl.uniformMatrix4fv(u_TransformMatrix, false, transformMatrix.elements);
 
   return n;
 }
