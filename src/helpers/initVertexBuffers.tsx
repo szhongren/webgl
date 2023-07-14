@@ -26,10 +26,31 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var cosB = Math.cos(radian);
   var sinB = Math.sin(radian);
 
-  var u_CosB = gl.getUniformLocation(program, "u_CosB");
-  var u_SinB = gl.getUniformLocation(program, "u_SinB");
-  gl.uniform1f(u_CosB, cosB);
-  gl.uniform1f(u_SinB, sinB);
+  // colum major order, each column down first, then across
+  var transformMatrix = new Float32Array([
+    cosB,
+    sinB,
+    0.0,
+    0.0,
+    //
+    -sinB,
+    cosB,
+    0.0,
+    0.0,
+    //
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    //
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+  ]);
+
+  var u_TransformMatrix = gl.getUniformLocation(program, "u_TransformMatrix");
+  gl.uniformMatrix4fv(u_TransformMatrix, false, transformMatrix);
 
   return n;
 }
