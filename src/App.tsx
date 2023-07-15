@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/rotatingTriangle/fragmentShader.frag";
-import vertShader from "./shaders/rotatingTriangle/vertexShader.vert";
+import fragShader from "./shaders/multiAttributeSize/fragmentShader.frag";
+import vertShader from "./shaders/multiAttributeSize/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -82,7 +82,7 @@ function draw(
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Draw the rectangle
-  gl.drawArrays(gl.TRIANGLES, 0, n);
+  gl.drawArrays(gl.POINTS, 0, n);
 }
 
 function animate(angle: number) {
