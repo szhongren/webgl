@@ -22,12 +22,16 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var transformMatrix = new TransformMatrix4();
-  transformMatrix.setRotate(90, 0, 0, 1);
+  var rotateThenTranslate = new TransformMatrix4()
+    .addRotate(90, 0, 0, 1)
+    .addTranslate(0.5, 0, 0);
 
-  console.log(transformMatrix.multiply(new TransformMatrix4()).display());
+  var translateThenRotate = new TransformMatrix4()
+    .addTranslate(0.5, 0, 0)
+    .addRotate(90, 0, 0, 1);
+
   var u_TransformMatrix = gl.getUniformLocation(program, "u_TransformMatrix");
-  gl.uniformMatrix4fv(u_TransformMatrix, false, transformMatrix.elements);
+  gl.uniformMatrix4fv(u_TransformMatrix, false, translateThenRotate.elements);
 
   return n;
 }
