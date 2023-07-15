@@ -5,10 +5,10 @@ import vertShader from "./shaders/rotatingTriangle/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
-import { draw } from "./helpers/animation";
 
 var g_last = Date.now();
-const ANGLE_STEP = 25.0;
+var currentAngle = 0.0;
+const ANGLE_STEP = 90.0;
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,12 +41,11 @@ function App() {
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 
-      var currentAngle = 0.0;
       var modelMatrix = new TransformMatrix4();
 
       var tick = function () {
         currentAngle = animate(currentAngle);
-        draw(gl, n, currentAngle, modelMatrix, u_ModelMatrix);
+        draw(gl, n, modelMatrix, u_ModelMatrix);
         requestAnimationFrame(tick);
       };
 
@@ -66,11 +65,28 @@ function App() {
   );
 }
 
+function draw(
+  gl: WebGLRenderingContext,
+  n: number,
+  modelMatrix: TransformMatrix4,
+  u_ModelMatrix: WebGLUniformLocation | null
+) {
+  // Set the rotation matrix
+  modelMatrix.setTranslate(0.35, 0, 0); // Translation (0.35, 0, 0)
+  modelMatrix.addRotate(currentAngle, 0, 0, 1); // Rotation angle, rotation axis (0, 0, 1)
+
+  // Pass the rotation matrix to the vertex shader
+  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+
+  // Clear <canvas>
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // Draw the rectangle
+  gl.drawArrays(gl.TRIANGLES, 0, n);
+}
+
 function animate(angle: number) {
   var now = Date.now();
-  if (now === g_last) {
-    return angle;
-  }
   var time_passed_s = (now - g_last) / 1000.0;
   g_last = now;
   var newAngle = angle + ANGLE_STEP * time_passed_s;
