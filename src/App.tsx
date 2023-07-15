@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/multiAttributeSize/fragmentShader.frag";
-import vertShader from "./shaders/multiAttributeSize/vertexShader.vert";
+import fragShader from "./shaders/multiAttributeSizeInterleaved/fragmentShader.frag";
+import vertShader from "./shaders/multiAttributeSizeInterleaved/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
