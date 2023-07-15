@@ -1,7 +1,7 @@
 import TransformMatrix4 from "./matrix";
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
-  var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+  var vertices = new Float32Array([0.0, 0.3, -0.3, -0.3, 0.3, -0.3]);
   var n = vertices.length / 2;
 
   // 1. create buffer object
@@ -22,16 +22,13 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var rotateThenTranslate = new TransformMatrix4()
-    .addRotate(90, 0, 0, 1)
-    .addTranslate(0.5, 0, 0);
-
-  var translateThenRotate = new TransformMatrix4()
-    .addTranslate(0.5, 0, 0)
-    .addRotate(90, 0, 0, 1);
-
-  var u_TransformMatrix = gl.getUniformLocation(program, "u_TransformMatrix");
-  gl.uniformMatrix4fv(u_TransformMatrix, false, translateThenRotate.elements);
+  var ANGLE = 60.0;
+  var Tx = 0.5;
+  var modelMatrix = new TransformMatrix4();
+  modelMatrix.setRotate(ANGLE, 0, 0, 1);
+  modelMatrix.addTranslate(Tx, 0, 0);
+  var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
+  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
   return n;
 }
