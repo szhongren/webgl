@@ -55,7 +55,8 @@ class TransformMatrix4 {
 
   addTranslate(x: number, y: number, z: number) {
     var translationMatrix = new TransformMatrix4().setTranslate(x, y, z);
-    return translationMatrix.multiply(this);
+    this.elements = translationMatrix.multiply(this).elements;
+    return this;
   }
 
   setRotate(angle: number, x: number, y: number, z: number) {
@@ -182,7 +183,8 @@ class TransformMatrix4 {
 
   addRotate(angle: number, x: number, y: number, z: number) {
     var rotationMatrix = new TransformMatrix4().setRotate(angle, x, y, z);
-    return rotationMatrix.multiply(this);
+    this.elements = rotationMatrix.multiply(this).elements;
+    return this;
   }
 
   setScale(x: number, y: number, z: number) {
@@ -212,87 +214,87 @@ class TransformMatrix4 {
 
   addScale(x: number, y: number, z: number) {
     var scaleMatrix = new TransformMatrix4().setScale(x, y, z);
-    return scaleMatrix.multiply(this);
+    this.elements = scaleMatrix.multiply(this).elements;
+    return this;
   }
 
-  multiply(other: TransformMatrix4, debug?: boolean) {
+  private multiply(other: TransformMatrix4, debug?: boolean) {
     // matrix multiplication is the same as composition, but composing a after b means b * a * point
     if (typeof debug !== "undefined" && debug) {
       console.log(this.display());
       console.log("*");
       console.log(other.display());
     }
-    return new TransformMatrix4(
-      new Float32Array([
-        this.elements[0] * other.elements[0] +
-          this.elements[4] * other.elements[1] +
-          this.elements[8] * other.elements[2] +
-          this.elements[12] * other.elements[3],
-        this.elements[1] * other.elements[0] +
-          this.elements[5] * other.elements[1] +
-          this.elements[9] * other.elements[2] +
-          this.elements[13] * other.elements[3],
-        this.elements[2] * other.elements[0] +
-          this.elements[6] * other.elements[1] +
-          this.elements[10] * other.elements[2] +
-          this.elements[14] * other.elements[3],
-        this.elements[3] * other.elements[0] +
-          this.elements[7] * other.elements[1] +
-          this.elements[11] * other.elements[2] +
-          this.elements[15] * other.elements[3],
-        //
-        this.elements[0] * other.elements[4] +
-          this.elements[4] * other.elements[5] +
-          this.elements[8] * other.elements[6] +
-          this.elements[12] * other.elements[7],
-        this.elements[1] * other.elements[4] +
-          this.elements[5] * other.elements[5] +
-          this.elements[9] * other.elements[6] +
-          this.elements[13] * other.elements[7],
-        this.elements[2] * other.elements[4] +
-          this.elements[6] * other.elements[5] +
-          this.elements[10] * other.elements[6] +
-          this.elements[14] * other.elements[7],
-        this.elements[3] * other.elements[4] +
-          this.elements[7] * other.elements[5] +
-          this.elements[11] * other.elements[6] +
-          this.elements[15] * other.elements[7],
-        //
-        this.elements[0] * other.elements[8] +
-          this.elements[4] * other.elements[9] +
-          this.elements[8] * other.elements[10] +
-          this.elements[12] * other.elements[11],
-        this.elements[1] * other.elements[8] +
-          this.elements[5] * other.elements[9] +
-          this.elements[9] * other.elements[10] +
-          this.elements[13] * other.elements[11],
-        this.elements[2] * other.elements[8] +
-          this.elements[6] * other.elements[9] +
-          this.elements[10] * other.elements[10] +
-          this.elements[14] * other.elements[11],
-        this.elements[3] * other.elements[8] +
-          this.elements[7] * other.elements[9] +
-          this.elements[11] * other.elements[10] +
-          this.elements[15] * other.elements[11],
-        //
-        this.elements[0] * other.elements[12] +
-          this.elements[4] * other.elements[13] +
-          this.elements[8] * other.elements[14] +
-          this.elements[12] * other.elements[15],
-        this.elements[1] * other.elements[12] +
-          this.elements[5] * other.elements[13] +
-          this.elements[9] * other.elements[14] +
-          this.elements[13] * other.elements[15],
-        this.elements[2] * other.elements[12] +
-          this.elements[6] * other.elements[13] +
-          this.elements[10] * other.elements[14] +
-          this.elements[14] * other.elements[15],
-        this.elements[3] * other.elements[12] +
-          this.elements[7] * other.elements[13] +
-          this.elements[11] * other.elements[14] +
-          this.elements[15] * other.elements[15],
-      ])
-    );
+    this.elements = new Float32Array([
+      this.elements[0] * other.elements[0] +
+        this.elements[4] * other.elements[1] +
+        this.elements[8] * other.elements[2] +
+        this.elements[12] * other.elements[3],
+      this.elements[1] * other.elements[0] +
+        this.elements[5] * other.elements[1] +
+        this.elements[9] * other.elements[2] +
+        this.elements[13] * other.elements[3],
+      this.elements[2] * other.elements[0] +
+        this.elements[6] * other.elements[1] +
+        this.elements[10] * other.elements[2] +
+        this.elements[14] * other.elements[3],
+      this.elements[3] * other.elements[0] +
+        this.elements[7] * other.elements[1] +
+        this.elements[11] * other.elements[2] +
+        this.elements[15] * other.elements[3],
+      //
+      this.elements[0] * other.elements[4] +
+        this.elements[4] * other.elements[5] +
+        this.elements[8] * other.elements[6] +
+        this.elements[12] * other.elements[7],
+      this.elements[1] * other.elements[4] +
+        this.elements[5] * other.elements[5] +
+        this.elements[9] * other.elements[6] +
+        this.elements[13] * other.elements[7],
+      this.elements[2] * other.elements[4] +
+        this.elements[6] * other.elements[5] +
+        this.elements[10] * other.elements[6] +
+        this.elements[14] * other.elements[7],
+      this.elements[3] * other.elements[4] +
+        this.elements[7] * other.elements[5] +
+        this.elements[11] * other.elements[6] +
+        this.elements[15] * other.elements[7],
+      //
+      this.elements[0] * other.elements[8] +
+        this.elements[4] * other.elements[9] +
+        this.elements[8] * other.elements[10] +
+        this.elements[12] * other.elements[11],
+      this.elements[1] * other.elements[8] +
+        this.elements[5] * other.elements[9] +
+        this.elements[9] * other.elements[10] +
+        this.elements[13] * other.elements[11],
+      this.elements[2] * other.elements[8] +
+        this.elements[6] * other.elements[9] +
+        this.elements[10] * other.elements[10] +
+        this.elements[14] * other.elements[11],
+      this.elements[3] * other.elements[8] +
+        this.elements[7] * other.elements[9] +
+        this.elements[11] * other.elements[10] +
+        this.elements[15] * other.elements[11],
+      //
+      this.elements[0] * other.elements[12] +
+        this.elements[4] * other.elements[13] +
+        this.elements[8] * other.elements[14] +
+        this.elements[12] * other.elements[15],
+      this.elements[1] * other.elements[12] +
+        this.elements[5] * other.elements[13] +
+        this.elements[9] * other.elements[14] +
+        this.elements[13] * other.elements[15],
+      this.elements[2] * other.elements[12] +
+        this.elements[6] * other.elements[13] +
+        this.elements[10] * other.elements[14] +
+        this.elements[14] * other.elements[15],
+      this.elements[3] * other.elements[12] +
+        this.elements[7] * other.elements[13] +
+        this.elements[11] * other.elements[14] +
+        this.elements[15] * other.elements[15],
+    ]);
+    return this;
   }
 
   display() {
