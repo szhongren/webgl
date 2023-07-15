@@ -23,7 +23,9 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   gl.enableVertexAttribArray(a_Position);
 
   var transformMatrix = new TransformMatrix4();
-  transformMatrix.setRotate(30, 0, 0, 1);
+  transformMatrix.setRotate(90, 0, 0, 1);
+
+  console.log(transformMatrix.multiply(new TransformMatrix4()).display());
   var u_TransformMatrix = gl.getUniformLocation(program, "u_TransformMatrix");
   gl.uniformMatrix4fv(u_TransformMatrix, false, transformMatrix.elements);
 

@@ -202,7 +202,82 @@ class TransformMatrix4 {
 
   addScale(x: number, y: number, z: number) {}
 
-  private multiply(other: TransformMatrix4) {}
+  multiply(other: TransformMatrix4) {
+    this.elements = new Float32Array([
+      this.elements[0] * other.elements[0] +
+        this.elements[4] * other.elements[1] +
+        this.elements[8] * other.elements[2] +
+        this.elements[12] * other.elements[3],
+      this.elements[1] * other.elements[0] +
+        this.elements[5] * other.elements[1] +
+        this.elements[9] * other.elements[2] +
+        this.elements[13] * other.elements[3],
+      this.elements[2] * other.elements[0] +
+        this.elements[6] * other.elements[1] +
+        this.elements[10] * other.elements[2] +
+        this.elements[14] * other.elements[3],
+      this.elements[3] * other.elements[0] +
+        this.elements[7] * other.elements[1] +
+        this.elements[11] * other.elements[2] +
+        this.elements[15] * other.elements[3],
+      //
+      this.elements[0] * other.elements[4] +
+        this.elements[4] * other.elements[5] +
+        this.elements[8] * other.elements[6] +
+        this.elements[12] * other.elements[7],
+      this.elements[1] * other.elements[4] +
+        this.elements[5] * other.elements[5] +
+        this.elements[9] * other.elements[6] +
+        this.elements[13] * other.elements[7],
+      this.elements[2] * other.elements[4] +
+        this.elements[6] * other.elements[5] +
+        this.elements[10] * other.elements[6] +
+        this.elements[14] * other.elements[7],
+      this.elements[3] * other.elements[4] +
+        this.elements[7] * other.elements[5] +
+        this.elements[11] * other.elements[6] +
+        this.elements[15] * other.elements[7],
+      //
+      this.elements[0] * other.elements[8] +
+        this.elements[4] * other.elements[9] +
+        this.elements[8] * other.elements[10] +
+        this.elements[12] * other.elements[11],
+      this.elements[1] * other.elements[8] +
+        this.elements[5] * other.elements[9] +
+        this.elements[9] * other.elements[10] +
+        this.elements[13] * other.elements[11],
+      this.elements[2] * other.elements[8] +
+        this.elements[6] * other.elements[9] +
+        this.elements[10] * other.elements[10] +
+        this.elements[14] * other.elements[11],
+      this.elements[3] * other.elements[8] +
+        this.elements[7] * other.elements[9] +
+        this.elements[11] * other.elements[10] +
+        this.elements[15] * other.elements[11],
+      //
+      this.elements[0] * other.elements[12] +
+        this.elements[4] * other.elements[13] +
+        this.elements[8] * other.elements[14] +
+        this.elements[12] * other.elements[15],
+      this.elements[1] * other.elements[12] +
+        this.elements[5] * other.elements[13] +
+        this.elements[9] * other.elements[14] +
+        this.elements[13] * other.elements[15],
+      this.elements[2] * other.elements[12] +
+        this.elements[6] * other.elements[13] +
+        this.elements[10] * other.elements[14] +
+        this.elements[14] * other.elements[15],
+      this.elements[3] * other.elements[12] +
+        this.elements[7] * other.elements[13] +
+        this.elements[11] * other.elements[14] +
+        this.elements[15] * other.elements[15],
+    ]);
+    return this;
+  }
+
+  display() {
+    return `${this.elements[0]} ${this.elements[4]} ${this.elements[8]} ${this.elements[12]}\n${this.elements[1]} ${this.elements[5]} ${this.elements[9]} ${this.elements[13]}\n${this.elements[2]} ${this.elements[6]} ${this.elements[10]} ${this.elements[14]}\n${this.elements[3]} ${this.elements[7]} ${this.elements[11]} ${this.elements[15]}`;
+  }
 }
 
 export default TransformMatrix4;
