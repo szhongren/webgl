@@ -1,9 +1,14 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/rotatedTranslatedTriangleMatrix/fragmentShader.frag";
-import vertShader from "./shaders/rotatedTranslatedTriangleMatrix/vertexShader.vert";
+import fragShader from "./shaders/rotatingTriangle/fragmentShader.frag";
+import vertShader from "./shaders/rotatingTriangle/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
+import TransformMatrix4 from "./helpers/matrix";
+import { draw } from "./helpers/animation";
+
+var g_last = Date.now();
+const ANGLE_STEP = 25.0;
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,8 +39,18 @@ function App() {
       var n = initVertexBuffers(gl, program);
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, n);
+      var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
+
+      var currentAngle = 0.0;
+      var modelMatrix = new TransformMatrix4();
+
+      var tick = function () {
+        currentAngle = animate(currentAngle);
+        draw(gl, n, currentAngle, modelMatrix, u_ModelMatrix);
+        requestAnimationFrame(tick);
+      };
+
+      tick();
     };
     loadShadersAndDraw();
   }, []);
@@ -49,6 +64,17 @@ function App() {
       // style={{ padding: "10px" }}
     ></canvas>
   );
+}
+
+function animate(angle: number) {
+  var now = Date.now();
+  if (now === g_last) {
+    return angle;
+  }
+  var time_passed_s = (now - g_last) / 1000.0;
+  g_last = now;
+  var newAngle = angle + ANGLE_STEP * time_passed_s;
+  return newAngle % 360;
 }
 
 export default App;

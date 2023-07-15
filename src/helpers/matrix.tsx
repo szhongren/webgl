@@ -1,3 +1,4 @@
+var logged = 0;
 class TransformMatrix4 {
   elements: Float32Array;
 

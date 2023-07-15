@@ -22,14 +22,6 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var ANGLE = 60.0;
-  var Tx = 0.5;
-  var modelMatrix = new TransformMatrix4();
-  modelMatrix.setRotate(ANGLE, 0, 0, 1);
-  modelMatrix.addTranslate(Tx, 0, 0);
-  var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
-  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
-
   return n;
 }
 
