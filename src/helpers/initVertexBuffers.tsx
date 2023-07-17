@@ -1,8 +1,12 @@
 import TransformMatrix4 from "./matrix";
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
-  var verticesAndSizes = new Float32Array([
-    0.0, 0.3, 10.0, -0.3, -0.3, 20.0, 0.3, -0.3, 30.0,
+  var verticesAndColors = new Float32Array([
+    0.0, 0.5, 1.0, 0.0, 0.0,
+    //
+    -0.5, -0.5, 0.0, 1.0, 0.0,
+    //
+    0.5, -0.5, 0.0, 0.0, 1.0,
   ]);
   var n = 3;
 
@@ -16,19 +20,19 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 2. bind the buffer object to target
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   // 3. write data into the buffer object
-  gl.bufferData(gl.ARRAY_BUFFER, verticesAndSizes, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, verticesAndColors, gl.STATIC_DRAW);
 
-  var FSIZE = verticesAndSizes.BYTES_PER_ELEMENT;
+  var FSIZE = verticesAndColors.BYTES_PER_ELEMENT;
 
   var a_Position = gl.getAttribLocation(program, "a_Position");
   // 4. assign buffer object to attribute variable
-  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 3, 0);
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var a_PointSize = gl.getAttribLocation(program, "a_PointSize");
-  gl.vertexAttribPointer(a_PointSize, 1, gl.FLOAT, false, FSIZE * 3, FSIZE * 2);
-  gl.enableVertexAttribArray(a_PointSize);
+  var a_Color = gl.getAttribLocation(program, "a_Color");
+  gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
+  gl.enableVertexAttribArray(a_Color);
 
   return n;
 }
