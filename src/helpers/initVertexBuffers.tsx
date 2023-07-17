@@ -1,12 +1,12 @@
 import TransformMatrix4 from "./matrix";
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
-  var verticesAndColors = new Float32Array([
-    0.0, 0.5, 1.0, 0.0, 0.0,
+  var vertices = new Float32Array([
+    0.0, 0.5,
     //
-    -0.5, -0.5, 0.0, 1.0, 0.0,
+    -0.5, -0.5,
     //
-    0.5, -0.5, 0.0, 0.0, 1.0,
+    0.5, -0.5,
   ]);
   var n = 3;
 
@@ -20,19 +20,18 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   // 2. bind the buffer object to target
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   // 3. write data into the buffer object
-  gl.bufferData(gl.ARRAY_BUFFER, verticesAndColors, gl.STATIC_DRAW);
-
-  var FSIZE = verticesAndColors.BYTES_PER_ELEMENT;
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
   var a_Position = gl.getAttribLocation(program, "a_Position");
   // 4. assign buffer object to attribute variable
-  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
   // 5. enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
 
-  var a_Color = gl.getAttribLocation(program, "a_Color");
-  gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
-  gl.enableVertexAttribArray(a_Color);
+  var u_Width = gl.getUniformLocation(program, "u_Width");
+  var u_Height = gl.getUniformLocation(program, "u_Height");
+  gl.uniform1f(u_Width, gl.drawingBufferWidth);
+  gl.uniform1f(u_Height, gl.drawingBufferHeight);
 
   return n;
 }
