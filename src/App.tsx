@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/helloTriangleFragCoord/fragmentShader.frag";
-import vertShader from "./shaders/helloTriangleFragCoord/vertexShader.vert";
+import fragShader from "./shaders/texturedQuad/fragmentShader.frag";
+import vertShader from "./shaders/texturedQuad/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
+import initTextures from "./helpers/initTextures";
 
 var g_last = Date.now();
 var currentAngle = 0.0;
@@ -39,17 +40,23 @@ function App() {
       var n = initVertexBuffers(gl, program);
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
-      var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 
-      var modelMatrix = new TransformMatrix4();
+      if (!initTextures(gl, program, n)) {
+        console.log("Failed to initialize textures.");
+        return;
+      }
 
-      var tick = function () {
-        currentAngle = animate(currentAngle);
-        draw(gl, n, modelMatrix, u_ModelMatrix);
-        requestAnimationFrame(tick);
-      };
+      // var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 
-      tick();
+      // var modelMatrix = new TransformMatrix4();
+
+      // var tick = function () {
+      //   currentAngle = animate(currentAngle);
+      //   draw(gl, n, modelMatrix, u_ModelMatrix);
+      //   requestAnimationFrame(tick);
+      // };
+
+      // tick();
     };
     loadShadersAndDraw();
   }, []);
