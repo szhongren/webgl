@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/texturedQuad/fragmentShader.frag";
-import vertShader from "./shaders/texturedQuad/vertexShader.vert";
+import fragShader from "./shaders/multiTexture/fragmentShader.frag";
+import vertShader from "./shaders/multiTexture/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -80,7 +80,7 @@ function draw(
 ) {
   // Set the rotation matrix
   modelMatrix.setTranslate(0.35, 0, 0); // Translation (0.35, 0, 0)
-  modelMatrix.addRotate(currentAngle, 0, 0, 1); // Rotation angle, rotation axis (0, 0, 1)
+  modelMatrix.addRotate(currentAngle, 1, 0, 1); // Rotation angle, rotation axis (0, 0, 1)
 
   // Pass the rotation matrix to the vertex shader
   gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
@@ -89,7 +89,7 @@ function draw(
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Draw the rectangle
-  gl.drawArrays(gl.TRIANGLES, 0, n);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
 }
 
 function animate(angle: number) {

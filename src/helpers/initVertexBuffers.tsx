@@ -2,13 +2,13 @@ import TransformMatrix4 from "./matrix";
 
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var verticesAndTextureCoords = new Float32Array([
-    -0.5, 0.5, -0.3, 1.7,
+    -0.5, 0.5, 0.0, 1.0,
     //
-    -0.5, -0.5, -0.3, -0.2,
+    -0.5, -0.5, 0.0, 0.0,
     //
-    0.5, 0.5, 1.7, 1.7,
+    0.5, 0.5, 1.0, 1.0,
     //
-    0.5, -0.5, 1.7, -0.2,
+    0.5, -0.5, 1.0, 0.0,
   ]);
   var n = 4;
 
