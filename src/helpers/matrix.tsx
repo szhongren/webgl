@@ -219,6 +219,91 @@ class TransformMatrix4 {
     return this;
   }
 
+  setLookAt(
+    eyeX: number,
+    eyeY: number,
+    eyeZ: number,
+    centerX: number,
+    centerY: number,
+    centerZ: number,
+    upX: number,
+    upY: number,
+    upZ: number
+  ) {
+    let e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
+
+    fx = centerX - eyeX;
+    fy = centerY - eyeY;
+    fz = centerZ - eyeZ;
+
+    rlf = 1 / Math.sqrt(fx * fx + fy * fy + fz * fz);
+    fx *= rlf;
+    fy *= rlf;
+    fz *= rlf;
+
+    sx = fy * upZ - fz * upY;
+    sy = fz * upX - fx * upZ;
+    sz = fx * upY - fy * upX;
+
+    rls = 1 / Math.sqrt(sx * sx + sy * sy + sz * sz);
+    sx *= rls;
+    sy *= rls;
+    sz *= rls;
+
+    ux = sy * fz - sz * fy;
+    uy = sz * fx - sx * fz;
+    uz = sx * fy - sy * fx;
+
+    e = this.elements;
+    e[0] = sx;
+    e[1] = ux;
+    e[2] = -fx;
+    e[3] = 0;
+
+    e[4] = sy;
+    e[5] = uy;
+    e[6] = -fy;
+    e[7] = 0;
+
+    e[8] = sz;
+    e[9] = uz;
+    e[10] = -fz;
+    e[11] = 0;
+
+    e[12] = 0;
+    e[13] = 0;
+    e[14] = 0;
+    e[15] = 1;
+
+    return this.addTranslate(-eyeX, -eyeY, -eyeZ);
+  }
+
+  addLookAt(
+    eyeX: number,
+    eyeY: number,
+    eyeZ: number,
+    centerX: number,
+    centerY: number,
+    centerZ: number,
+    upX: number,
+    upY: number,
+    upZ: number
+  ) {
+    var lookAtMatrix = new TransformMatrix4().setLookAt(
+      eyeX,
+      eyeY,
+      eyeZ,
+      centerX,
+      centerY,
+      centerZ,
+      upX,
+      upY,
+      upZ
+    );
+    this.elements = lookAtMatrix.multiply(this).elements;
+    return this;
+  }
+
   private multiply(other: TransformMatrix4, debug?: boolean) {
     // matrix multiplication is the same as composition, but composing a after b means b * a * point
     if (typeof debug !== "undefined" && debug) {

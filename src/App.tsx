@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/multiTexture/fragmentShader.frag";
-import vertShader from "./shaders/multiTexture/vertexShader.vert";
+import fragShader from "./shaders/lookAtTriangles/fragmentShader.frag";
+import vertShader from "./shaders/lookAtTriangles/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
-import initTextures from "./helpers/initTextures";
 
 var g_last = Date.now();
 var currentAngle = 0.0;
@@ -41,22 +40,15 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-      if (!initTextures(gl, program, n)) {
-        console.log("Failed to initialize textures.");
-        return;
-      }
+      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
 
-      // var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
+      var viewMatrix = new TransformMatrix4();
+      viewMatrix.setLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
 
-      // var modelMatrix = new TransformMatrix4();
+      gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
-      // var tick = function () {
-      //   currentAngle = animate(currentAngle);
-      //   draw(gl, n, modelMatrix, u_ModelMatrix);
-      //   requestAnimationFrame(tick);
-      // };
-
-      // tick();
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, n);
     };
     loadShadersAndDraw();
   }, []);
