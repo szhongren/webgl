@@ -230,44 +230,63 @@ class TransformMatrix4 {
     upY: number,
     upZ: number
   ) {
-    let e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
+    let e,
+      forwardX,
+      forwardY,
+      forwardZ,
+      forwardNormalizationFactor,
+      rightX,
+      rightY,
+      rightZ,
+      rightNormalizationFactor,
+      newUpX,
+      newUpY,
+      newUpZ;
 
-    fx = centerX - eyeX;
-    fy = centerY - eyeY;
-    fz = centerZ - eyeZ;
+    // forward = normalize(center - eye)
+    forwardX = centerX - eyeX;
+    forwardY = centerY - eyeY;
+    forwardZ = centerZ - eyeZ;
 
-    rlf = 1 / Math.sqrt(fx * fx + fy * fy + fz * fz);
-    fx *= rlf;
-    fy *= rlf;
-    fz *= rlf;
+    forwardNormalizationFactor =
+      1 /
+      Math.sqrt(
+        forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ
+      );
+    forwardX *= forwardNormalizationFactor;
+    forwardY *= forwardNormalizationFactor;
+    forwardZ *= forwardNormalizationFactor;
 
-    sx = fy * upZ - fz * upY;
-    sy = fz * upX - fx * upZ;
-    sz = fx * upY - fy * upX;
+    // right = normalize(cross(forward, up))
+    rightX = forwardY * upZ - forwardZ * upY;
+    rightY = forwardZ * upX - forwardX * upZ;
+    rightZ = forwardX * upY - forwardY * upX;
 
-    rls = 1 / Math.sqrt(sx * sx + sy * sy + sz * sz);
-    sx *= rls;
-    sy *= rls;
-    sz *= rls;
+    rightNormalizationFactor =
+      1 / Math.sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
+    rightX *= rightNormalizationFactor;
+    rightY *= rightNormalizationFactor;
+    rightZ *= rightNormalizationFactor;
 
-    ux = sy * fz - sz * fy;
-    uy = sz * fx - sx * fz;
-    uz = sx * fy - sy * fx;
+    // up = cross(right, forward), right is already normalized
+    newUpX = rightY * forwardZ - rightZ * forwardY;
+    newUpY = rightZ * forwardX - rightX * forwardZ;
+    newUpZ = rightX * forwardY - rightY * forwardX;
 
     e = this.elements;
-    e[0] = sx;
-    e[1] = ux;
-    e[2] = -fx;
+    e[0] = rightX;
+    e[1] = newUpX;
+    e[2] = -forwardX;
     e[3] = 0;
 
-    e[4] = sy;
-    e[5] = uy;
-    e[6] = -fy;
+    e[4] = rightY;
+    e[5] = newUpY;
+    e[6] = -forwardY;
     e[7] = 0;
 
-    e[8] = sz;
-    e[9] = uz;
-    e[10] = -fz;
+    e[8] = rightZ;
+    e[9] = newUpZ;
+    e[10] = -forwardZ;
     e[11] = 0;
 
     e[12] = 0;
