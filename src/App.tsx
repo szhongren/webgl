@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/lookAtRotatedTrianglesMvMatrix/fragmentShader.frag";
-import vertShader from "./shaders/lookAtRotatedTrianglesMvMatrix/vertexShader.vert";
+import fragShader from "./shaders/lookAtTrianglesWithKeys/fragmentShader.frag";
+import vertShader from "./shaders/lookAtTrianglesWithKeys/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -40,28 +40,24 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-      var u_ModelViewMatrix = gl.getUniformLocation(
-        program,
-        "u_ModelViewMatrix"
+      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
+
+      var viewMatrix = new TransformMatrix4().setLookAt(
+        g_eyeX,
+        g_eyeY,
+        g_eyeZ,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
       );
+      document.onkeydown = function (ev) {
+        keydown(ev, gl, n, u_ViewMatrix, viewMatrix);
+      };
 
-      // // set view matrix
-      // var viewMatrix = new TransformMatrix4();
-      // viewMatrix.setLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
-
-      // // set model matrix
-      // var modelMatrix = new TransformMatrix4();
-      // modelMatrix.setRotate(-10, 0, 0, 1); // Rotate around the z-axis
-
-      // var modelViewMatrix = viewMatrix.multiply(modelMatrix);
-
-      // calculate model view matrix
-      var modelViewMatrix = new TransformMatrix4()
-        // remember add rotate first then add lookAt because we multiply by rotate first then lookAt
-        .addRotate(-10, 0, 0, 1)
-        .addLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
-
-      gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
+      gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, n);
@@ -83,21 +79,18 @@ function App() {
 function draw(
   gl: WebGLRenderingContext,
   n: number,
-  modelMatrix: TransformMatrix4,
-  u_ModelMatrix: WebGLUniformLocation | null
+  matrix: TransformMatrix4,
+  u_Matrix: WebGLUniformLocation | null
 ) {
-  // Set the rotation matrix
-  modelMatrix.setTranslate(0.35, 0, 0); // Translation (0.35, 0, 0)
-  modelMatrix.addRotate(currentAngle, 1, 0, 1); // Rotation angle, rotation axis (0, 0, 1)
+  // set the eye point and line of sight
+  matrix.setLookAt(g_eyeX, g_eyeY, g_eyeZ, 0, 0, 0, 0, 1, 0);
 
-  // Pass the rotation matrix to the vertex shader
-  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+  // pass the view matrix to the variable u_ViewMatrix
+  gl.uniformMatrix4fv(u_Matrix, false, matrix.elements);
 
-  // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  // Draw the rectangle
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+  gl.drawArrays(gl.TRIANGLES, 0, n);
 }
 
 function animate(angle: number) {
@@ -108,4 +101,27 @@ function animate(angle: number) {
   return newAngle % 360;
 }
 
+var g_eyeX = 0.2,
+  g_eyeY = 0.25,
+  g_eyeZ = 0.25; // Eye position
+function keydown(
+  ev: KeyboardEvent,
+  gl: WebGL2RenderingContext,
+  n: number,
+  u_ViewMatrix: WebGLUniformLocation | null,
+  viewMatrix: TransformMatrix4
+) {
+  if (ev.code === "ArrowUp") {
+    g_eyeY += 0.01;
+  } else if (ev.code === "ArrowDown") {
+    g_eyeY -= 0.01;
+  } else if (ev.code === "ArrowRight") {
+    g_eyeX += 0.01;
+  } else if (ev.code === "ArrowLeft") {
+    g_eyeX -= 0.01;
+  } else {
+    return;
+  }
+  draw(gl, n, viewMatrix, u_ViewMatrix);
+}
 export default App;
