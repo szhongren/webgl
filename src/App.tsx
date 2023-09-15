@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/lookAtRotatedTriangles/fragmentShader.frag";
-import vertShader from "./shaders/lookAtRotatedTriangles/vertexShader.vert";
+import fragShader from "./shaders/lookAtRotatedTrianglesMvMatrix/fragmentShader.frag";
+import vertShader from "./shaders/lookAtRotatedTrianglesMvMatrix/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -40,19 +40,28 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
-      var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
+      var u_ModelViewMatrix = gl.getUniformLocation(
+        program,
+        "u_ModelViewMatrix"
+      );
 
-      // set view matrix
-      var viewMatrix = new TransformMatrix4();
-      viewMatrix.setLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
+      // // set view matrix
+      // var viewMatrix = new TransformMatrix4();
+      // viewMatrix.setLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
 
-      // calculate model matrix
-      var modelMatrix = new TransformMatrix4();
-      modelMatrix.setRotate(-10, 0, 0, 1); // Rotate around the z-axis
+      // // set model matrix
+      // var modelMatrix = new TransformMatrix4();
+      // modelMatrix.setRotate(-10, 0, 0, 1); // Rotate around the z-axis
 
-      gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
-      gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+      // var modelViewMatrix = viewMatrix.multiply(modelMatrix);
+
+      // calculate model view matrix
+      var modelViewMatrix = new TransformMatrix4()
+        // remember add rotate first then add lookAt because we multiply by rotate first then lookAt
+        .addRotate(-10, 0, 0, 1)
+        .addLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
+
+      gl.uniformMatrix4fv(u_ModelViewMatrix, false, modelViewMatrix.elements);
 
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, n);

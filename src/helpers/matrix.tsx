@@ -323,7 +323,7 @@ class TransformMatrix4 {
     return this;
   }
 
-  private multiply(other: TransformMatrix4, debug?: boolean) {
+  multiply(other: TransformMatrix4, debug?: boolean) {
     // matrix multiplication is the same as composition, but composing a after b means b * a * point
     if (typeof debug !== "undefined" && debug) {
       console.log(this.display());
