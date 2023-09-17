@@ -232,6 +232,69 @@ class TransformMatrix4 {
     return this;
   }
 
+  setOrtho(
+    left: number,
+    right: number,
+    bottom: number,
+    top: number,
+    near: number,
+    far: number
+  ) {
+    var newElements, width, height, depth;
+
+    if (left === right || bottom === top || near === far) {
+      throw "null frustum";
+    }
+
+    width = 1 / (right - left);
+    height = 1 / (top - bottom);
+    depth = 1 / (far - near);
+
+    newElements = this.elements;
+
+    newElements[0] = 2 * width;
+    newElements[1] = 0;
+    newElements[2] = 0;
+    newElements[3] = 0;
+
+    newElements[4] = 0;
+    newElements[5] = 2 * height;
+    newElements[6] = 0;
+    newElements[7] = 0;
+
+    newElements[8] = 0;
+    newElements[9] = 0;
+    newElements[10] = -2 * depth;
+    newElements[11] = 0;
+
+    newElements[12] = -(right + left) * width;
+    newElements[13] = -(top + bottom) * height;
+    newElements[14] = -(far + near) * depth;
+    newElements[15] = 1;
+
+    return this;
+  }
+
+  addOrtho(
+    left: number,
+    right: number,
+    bottom: number,
+    top: number,
+    near: number,
+    far: number
+  ) {
+    var orthoMatrix = new TransformMatrix4().setOrtho(
+      left,
+      right,
+      bottom,
+      top,
+      near,
+      far
+    );
+    this.elements = orthoMatrix.multiply(this).elements;
+    return this;
+  }
+
   setLookAt(
     eyeX: number,
     eyeY: number,
