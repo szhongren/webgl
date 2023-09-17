@@ -3,21 +3,19 @@ import TransformMatrix4 from "./matrix";
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var verticesAndColors = new Float32Array([
     0.0,
-    0.5,
+    0.6,
     -0.4,
     0.4,
     1.0,
     0.4, // The back green one
-    //
     -0.5,
-    -0.5,
+    -0.4,
     -0.4,
     0.4,
     1.0,
     0.4,
-    //
     0.5,
-    -0.5,
+    -0.4,
     -0.4,
     1.0,
     0.4,
@@ -29,14 +27,12 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
     1.0,
     0.4,
     0.4, // The middle yellow one
-    //
     -0.5,
     0.4,
     -0.2,
     1.0,
     1.0,
     0.4,
-    //
     0.0,
     -0.6,
     -0.2,
@@ -50,14 +46,12 @@ function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
     0.4,
     0.4,
     1.0, // The front blue one
-    //
     -0.5,
     -0.5,
     0.0,
     0.4,
     0.4,
     1.0,
-    //
     0.5,
     -0.5,
     0.0,
