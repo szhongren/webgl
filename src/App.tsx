@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/orthoView/fragmentShader.frag";
-import vertShader from "./shaders/orthoView/vertexShader.vert";
+import fragShader from "./shaders/lookAtTrianglesWithKeysViewVolume/fragmentShader.frag";
+import vertShader from "./shaders/lookAtTrianglesWithKeysViewVolume/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -51,17 +51,19 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
+      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
       var u_ProjMatrix = gl.getUniformLocation(program, "u_ProjMatrix");
 
-      var projMatrix = new TransformMatrix4();
+      var viewMatrix = new TransformMatrix4();
       document.onkeydown = function (ev) {
-        keydown(ev, gl, n, u_ProjMatrix, projMatrix, nearFar);
+        keydown(ev, gl, n, u_ViewMatrix, viewMatrix);
       };
 
+      var projMatrix = new TransformMatrix4();
+      projMatrix.setOrtho(-1, 1, -1, 1, 0, 2);
       gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, n);
+      draw(gl, n, viewMatrix, u_ViewMatrix);
     };
     loadShadersAndDraw();
   }, []);
@@ -84,20 +86,17 @@ function draw(
   gl: WebGLRenderingContext,
   n: number,
   matrix: TransformMatrix4,
-  u_Matrix: WebGLUniformLocation | null,
-  nearFar: HTMLElement
+  u_Matrix: WebGLUniformLocation | null
 ) {
-  // set the orthographic projection matrix
-  matrix.setOrtho(-1, 1, -1, 1, g_near, g_far);
+  // // set the orthographic projection matrix
+  // matrix.setOrtho(-1, 1, -1, 1, g_near, g_far);
+
+  matrix.setLookAt(g_eyeX, g_eyeY, g_eyeZ, 0, 0, 0, 0, 1, 0);
 
   // pass the view matrix to the variable u_ViewMatrix
   gl.uniformMatrix4fv(u_Matrix, false, matrix.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  nearFar.innerHTML = `near: ${Math.round(g_near * 100) / 100}, far: ${
-    Math.round(g_far * 100) / 100
-  }`;
 
   gl.drawArrays(gl.TRIANGLES, 0, n);
 }
@@ -115,25 +114,24 @@ function keydown(
   gl: WebGL2RenderingContext,
   n: number,
   u_ViewMatrix: WebGLUniformLocation | null,
-  viewMatrix: TransformMatrix4,
-  nearFar: HTMLElement
+  viewMatrix: TransformMatrix4
 ) {
   switch (ev.code) {
     case "ArrowUp":
-      g_far += 0.01;
+      g_eyeY += 0.01;
       break;
     case "ArrowDown":
-      g_far -= 0.01;
+      g_eyeY -= 0.01;
       break;
     case "ArrowRight":
-      g_near += 0.01;
+      g_eyeX += 0.01;
       break;
     case "ArrowLeft":
-      g_near -= 0.01;
+      g_eyeX -= 0.01;
       break;
     default:
       return;
   }
-  draw(gl, n, viewMatrix, u_ViewMatrix, nearFar);
+  draw(gl, n, viewMatrix, u_ViewMatrix);
 }
 export default App;
