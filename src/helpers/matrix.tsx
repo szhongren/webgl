@@ -295,6 +295,68 @@ class TransformMatrix4 {
     return this;
   }
 
+  setPerspective(fovY: number, aspect: number, near: number, far: number) {
+    var newElements,
+      rangeZReciprocal,
+      sinHalfFovYRadians,
+      cotangentHalfFovYRadians,
+      halfFovYRadians;
+
+    if (near === far || aspect === 0) {
+      throw "null frustum";
+    }
+    if (near <= 0) {
+      throw "near <= 0";
+    }
+    if (far <= 0) {
+      throw "far <= 0";
+    }
+
+    halfFovYRadians = (Math.PI * fovY) / 180 / 2;
+    sinHalfFovYRadians = Math.sin(halfFovYRadians);
+    if (sinHalfFovYRadians === 0) {
+      throw "null frustum";
+    }
+
+    rangeZReciprocal = 1 / (far - near);
+    cotangentHalfFovYRadians = Math.cos(halfFovYRadians) / sinHalfFovYRadians;
+
+    newElements = this.elements;
+
+    newElements[0] = cotangentHalfFovYRadians / aspect;
+    newElements[1] = 0;
+    newElements[2] = 0;
+    newElements[3] = 0;
+
+    newElements[4] = 0;
+    newElements[5] = cotangentHalfFovYRadians;
+    newElements[6] = 0;
+    newElements[7] = 0;
+
+    newElements[8] = 0;
+    newElements[9] = 0;
+    newElements[10] = -(far + near) * rangeZReciprocal;
+    newElements[11] = -1;
+
+    newElements[12] = 0;
+    newElements[13] = 0;
+    newElements[14] = -2 * near * far * rangeZReciprocal;
+    newElements[15] = 0;
+
+    return this;
+  }
+
+  addPerspective(fovY: number, aspect: number, near: number, far: number) {
+    var perspectiveMatrix = new TransformMatrix4().setPerspective(
+      fovY,
+      aspect,
+      near,
+      far
+    );
+    this.elements = perspectiveMatrix.multiply(this).elements;
+    return this;
+  }
+
   setLookAt(
     eyeX: number,
     eyeY: number,

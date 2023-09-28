@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/lookAtTrianglesWithKeysViewVolume/fragmentShader.frag";
-import vertShader from "./shaders/lookAtTrianglesWithKeysViewVolume/vertexShader.vert";
+import fragShader from "./shaders/perspectiveView/fragmentShader.frag";
+import vertShader from "./shaders/perspectiveView/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -55,15 +55,15 @@ function App() {
       var u_ProjMatrix = gl.getUniformLocation(program, "u_ProjMatrix");
 
       var viewMatrix = new TransformMatrix4();
-      document.onkeydown = function (ev) {
-        keydown(ev, gl, n, u_ViewMatrix, viewMatrix);
-      };
-
       var projMatrix = new TransformMatrix4();
-      projMatrix.setOrtho(-1, 1, -1, 1, 0, 2);
+      viewMatrix.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
+      projMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
       gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
+      gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
-      draw(gl, n, viewMatrix, u_ViewMatrix);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.drawArrays(gl.TRIANGLES, 0, n);
     };
     loadShadersAndDraw();
   }, []);
@@ -77,7 +77,7 @@ function App() {
         // style={{ border: "10px solid black" }}
         // style={{ padding: "10px" }}
       ></canvas>
-      <p id="nearFar">The near and far values are displayed here</p>
+      {/* <p id="nearFar">The near and far values are displayed here</p> */}
     </>
   );
 }
