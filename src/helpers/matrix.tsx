@@ -243,7 +243,7 @@ class TransformMatrix4 {
     var newElements, width, height, depth;
 
     if (left === right || bottom === top || near === far) {
-      throw "null frustum";
+      throw new Error("null frustum");
     }
 
     width = 1 / (right - left);
@@ -303,19 +303,19 @@ class TransformMatrix4 {
       halfFovYRadians;
 
     if (near === far || aspect === 0) {
-      throw "null frustum";
+      throw new Error("null frustum");
     }
     if (near <= 0) {
-      throw "near <= 0";
+      throw new Error("near <= 0");
     }
     if (far <= 0) {
-      throw "far <= 0";
+      throw new Error("far <= 0");
     }
 
     halfFovYRadians = (Math.PI * fovY) / 180 / 2;
     sinHalfFovYRadians = Math.sin(halfFovYRadians);
     if (sinHalfFovYRadians === 0) {
-      throw "null frustum";
+      throw new Error("null frustum");
     }
 
     rangeZReciprocal = 1 / (far - near);

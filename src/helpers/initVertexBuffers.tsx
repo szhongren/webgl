@@ -1,5 +1,3 @@
-import TransformMatrix4 from "./matrix";
-
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var verticesAndColors = new Float32Array([
     // Three triangles on the right side
