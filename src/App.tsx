@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/perspectiveView/fragmentShader.frag";
-import vertShader from "./shaders/perspectiveView/vertexShader.vert";
+import fragShader from "./shaders/perspectiveViewMvp/fragmentShader.frag";
+import vertShader from "./shaders/perspectiveViewMvp/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -26,12 +26,6 @@ function App() {
         return;
       }
       const gl = canvas.getContext("webgl2");
-      const nearFar = document.getElementById("nearFar");
-
-      if (!nearFar) {
-        console.log("nearFar is not available.");
-        return;
-      }
 
       if (!gl) {
         console.log("WebGL2 is not available.");
@@ -51,17 +45,26 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
       var u_ProjMatrix = gl.getUniformLocation(program, "u_ProjMatrix");
+      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
+      var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 
-      var viewMatrix = new TransformMatrix4();
       var projMatrix = new TransformMatrix4();
-      viewMatrix.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
+      var viewMatrix = new TransformMatrix4();
+      var modelMatrix = new TransformMatrix4();
       projMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
+      viewMatrix.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
+      modelMatrix.setTranslate(0.75, 0, 0);
       gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
       gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+      gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
       gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.drawArrays(gl.TRIANGLES, 0, n);
+
+      modelMatrix.setTranslate(-0.75, 0, 0);
+      gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
       gl.drawArrays(gl.TRIANGLES, 0, n);
     };

@@ -1,126 +1,64 @@
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var verticesAndColors = new Float32Array([
-    // Three triangles on the right side
-    0.75,
+    // Vertex coordinates and color
+    0.0,
     1.0,
     -4.0,
     0.4,
     1.0,
     0.4, // The back green one
-    0.25,
+    -0.5,
     -1.0,
     -4.0,
     0.4,
     1.0,
     0.4,
-    1.25,
+    0.5,
     -1.0,
     -4.0,
     1.0,
     0.4,
     0.4,
-
     //
-    0.75,
+    0.0,
     1.0,
     -2.0,
     1.0,
     1.0,
     0.4, // The middle yellow one
-    0.25,
+    -0.5,
     -1.0,
     -2.0,
     1.0,
     1.0,
     0.4,
-    1.25,
+    0.5,
     -1.0,
     -2.0,
     1.0,
     0.4,
     0.4,
-
     //
-    0.75,
+    0.0,
     1.0,
     0.0,
     0.4,
     0.4,
     1.0, // The front blue one
-    0.25,
+    -0.5,
     -1.0,
     0.0,
     0.4,
     0.4,
     1.0,
-    1.25,
-    -1.0,
-    0.0,
-    1.0,
-    0.4,
-    0.4,
-
-    // Three triangles on the left side
-    -0.75,
-    1.0,
-    -4.0,
-    0.4,
-    1.0,
-    0.4, // The back green one
-    -1.25,
-    -1.0,
-    -4.0,
-    0.4,
-    1.0,
-    0.4,
-    -0.25,
-    -1.0,
-    -4.0,
-    1.0,
-    0.4,
-    0.4,
-
-    //
-    -0.75,
-    1.0,
-    -2.0,
-    1.0,
-    1.0,
-    0.4, // The middle yellow one
-    -1.25,
-    -1.0,
-    -2.0,
-    1.0,
-    1.0,
-    0.4,
-    -0.25,
-    -1.0,
-    -2.0,
-    1.0,
-    0.4,
-    0.4,
-
-    //
-    -0.75,
-    1.0,
-    0.0,
-    0.4,
-    0.4,
-    1.0, // The front blue one
-    -1.25,
-    -1.0,
-    0.0,
-    0.4,
-    0.4,
-    1.0,
-    -0.25,
+    0.5,
     -1.0,
     0.0,
     1.0,
     0.4,
     0.4,
   ]);
-  var n = 18;
+  var n = 9;
 
   // 1. create buffer object
   var vertexBuffer = gl.createBuffer();
