@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/perspectiveViewMvp/fragmentShader.frag";
-import vertShader from "./shaders/perspectiveViewMvp/vertexShader.vert";
+import fragShader from "./shaders/perspectiveViewMvpMatrix/fragmentShader.frag";
+import vertShader from "./shaders/perspectiveViewMvpMatrix/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -45,26 +45,25 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-      var u_ProjMatrix = gl.getUniformLocation(program, "u_ProjMatrix");
-      var u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
-      var u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
+      var u_MvpMatrix = gl.getUniformLocation(program, "u_MvpMatrix");
 
       var projMatrix = new TransformMatrix4();
       var viewMatrix = new TransformMatrix4();
       var modelMatrix = new TransformMatrix4();
+      var mvpMatrix = new TransformMatrix4();
       projMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
       viewMatrix.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
       modelMatrix.setTranslate(0.75, 0, 0);
-      gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
-      gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
-      gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+      mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+      gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       gl.drawArrays(gl.TRIANGLES, 0, n);
 
       modelMatrix.setTranslate(-0.75, 0, 0);
-      gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+      mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+      gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
       gl.drawArrays(gl.TRIANGLES, 0, n);
     };
