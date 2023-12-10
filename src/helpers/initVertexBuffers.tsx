@@ -1,64 +1,12 @@
 function initVertexBuffers(gl: WebGLRenderingContext, program: WebGLProgram) {
   var verticesAndColors = new Float32Array([
-    // Vertex coordinates and color
-    0.0,
-    1.0,
-    0.0,
-    0.4,
-    0.4,
-    1.0, // The front blue one
-    -0.5,
-    -1.0,
-    0.0,
-    0.4,
-    0.4,
-    1.0,
-    0.5,
-    -1.0,
-    0.0,
-    1.0,
-    0.4,
-    0.4,
-    //
-    0.0,
-    1.0,
-    -2.0,
-    1.0,
-    1.0,
-    0.4, // The middle yellow one
-    -0.5,
-    -1.0,
-    -2.0,
-    1.0,
-    1.0,
-    0.4,
-    0.5,
-    -1.0,
-    -2.0,
-    1.0,
-    0.4,
-    0.4,
-    //
-    0.0,
-    1.0,
-    -4.0,
-    0.4,
-    1.0,
-    0.4, // The back green one
-    -0.5,
-    -1.0,
-    -4.0,
-    0.4,
-    1.0,
-    0.4,
-    0.5,
-    -1.0,
-    -4.0,
-    1.0,
-    0.4,
-    0.4,
+    0.0, 2.5, -5.0, 0.0, 1.0, 0.0, -2.5, -2.5, -5.0, 0.0, 1.0, 0.0, 2.5, -2.5,
+    -5.0, 1.0, 0.0, 0.0,
+
+    0.0, 3.0, -5.0, 1.0, 0.0, 0.0, -3.0, -3.0, -5.0, 1.0, 1.0, 0.0, 3.0, -3.0,
+    -5.0, 1.0, 1.0, 0.0,
   ]);
-  var n = 9;
+  var n = 6;
 
   // 1. create buffer object
   var vertexBuffer = gl.createBuffer();

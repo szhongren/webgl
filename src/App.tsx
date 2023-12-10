@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/depthBuffer/fragmentShader.frag";
-import vertShader from "./shaders/depthBuffer/vertexShader.vert";
+import fragShader from "./shaders/zFighting/fragmentShader.frag";
+import vertShader from "./shaders/zFighting/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -45,6 +45,7 @@ function App() {
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.enable(gl.DEPTH_TEST);
+      gl.enable(gl.POLYGON_OFFSET_FILL);
 
       var u_MvpMatrix = gl.getUniformLocation(program, "u_MvpMatrix");
 
@@ -52,21 +53,22 @@ function App() {
       var viewMatrix = new TransformMatrix4();
       var modelMatrix = new TransformMatrix4();
       var mvpMatrix = new TransformMatrix4();
-      projMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
+      projMatrix.setPerspective(60, canvas.width / canvas.height, 1, 100);
       viewMatrix.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
-      modelMatrix.setTranslate(0.75, 0, 0);
+      // modelMatrix.setTranslate(0.75, 0, 0);
       mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
       gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT);
 
-      gl.drawArrays(gl.TRIANGLES, 0, n);
+      gl.drawArrays(gl.TRIANGLES, 0, n / 2);
+      gl.polygonOffset(1.0, 1.0);
 
-      modelMatrix.setTranslate(-0.75, 0, 0);
+      // modelMatrix.setTranslate(-0.75, 0, 0);
       mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
       gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
-      gl.drawArrays(gl.TRIANGLES, 0, n);
+      gl.drawArrays(gl.TRIANGLES, n / 2, n / 2);
     };
     loadShadersAndDraw();
   }, []);
