@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
-import fragShader from "./shaders/perspectiveViewMvpMatrix/fragmentShader.frag";
-import vertShader from "./shaders/perspectiveViewMvpMatrix/vertexShader.vert";
+import fragShader from "./shaders/depthBuffer/fragmentShader.frag";
+import vertShader from "./shaders/depthBuffer/vertexShader.vert";
 import initShaders from "./helpers/initShaders";
 import initVertexBuffers from "./helpers/initVertexBuffers";
 import TransformMatrix4 from "./helpers/matrix";
@@ -44,6 +44,7 @@ function App() {
       var n = initVertexBuffers(gl, program);
 
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.enable(gl.DEPTH_TEST);
 
       var u_MvpMatrix = gl.getUniformLocation(program, "u_MvpMatrix");
 
@@ -57,7 +58,7 @@ function App() {
       mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
       gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       gl.drawArrays(gl.TRIANGLES, 0, n);
 
